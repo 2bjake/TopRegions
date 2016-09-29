@@ -7,8 +7,15 @@
 //
 
 #import "AppDelegate.h"
+#import "Region.h" //temp
+#import "RegionDatabaseAvailability.h"
+
+#define CORE_DATA_FILE @"TopRegionsModel"
+#define REGION @"Region"
 
 @interface AppDelegate ()
+@property (nonatomic) UIManagedDocument *regionDatabaseDocument;
+@property (nonatomic) NSManagedObjectContext *regionDatabaseContext;
 
 @end
 
@@ -16,8 +23,72 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    [self openCoreDataDocument];
     return YES;
+}
+
+- (void)openCoreDataDocument {
+    NSURL *url = [self coreDataUrl];
+    if (!self.regionDatabaseDocument) {
+        self.regionDatabaseDocument = [[UIManagedDocument alloc] initWithFileURL:url];
+    }
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
+        [self.regionDatabaseDocument openWithCompletionHandler:^(BOOL success) {
+            if (success) {
+                [self regionDatabaseDocumentReady];
+            } else {
+                NSLog(@"couldn't open the document at %@", url);
+            }
+        }];
+    } else {
+        [self.regionDatabaseDocument saveToURL:url forSaveOperation:UIDocumentSaveForCreating completionHandler:^(BOOL success) {
+            if (success) {
+                [self regionDatabaseDocumentReady];
+            } else {
+                NSLog(@"couldn't create the document at %@", url);
+            }
+        }];
+    }
+}
+
+- (void)regionDatabaseDocumentReady {
+    if (self.regionDatabaseDocument.documentState == UIDocumentStateNormal) {
+        self.regionDatabaseContext = self.regionDatabaseDocument.managedObjectContext;
+        [self populateRegionDatabase];
+    } else {
+        NSLog(@"document at %@ is not ready", self.regionDatabaseDocument.fileURL);
+    }
+}
+
+- (void)setRegionDatabaseContext:(NSManagedObjectContext *)regionDatabaseContext {
+    _regionDatabaseContext = regionDatabaseContext;
+    NSDictionary *userInfo = self.regionDatabaseContext ? @{ RegionDatabaseAvailabilityContext : self.regionDatabaseContext} : nil;
+    [[NSNotificationCenter defaultCenter] postNotificationName:RegionDatabaseAvailabilityNotification
+                                                        object:self
+                                                      userInfo:userInfo];
+}
+
+- (void)populateRegionDatabase { //this is temp
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:REGION];
+    request.fetchBatchSize = 20;
+    request.predicate = nil;
+    NSArray *regions = [self.regionDatabaseContext executeFetchRequest:request error:NULL];
+    if ([regions count] == 0) {
+        Region *region = [NSEntityDescription insertNewObjectForEntityForName:REGION inManagedObjectContext:self.regionDatabaseContext];
+        region.unique = @"1";
+        region.name = @"Hello";
+        
+        region = [NSEntityDescription insertNewObjectForEntityForName:REGION inManagedObjectContext:self.regionDatabaseContext];
+        region.unique = @"2";
+        region.name = @"World";
+    }
+}
+
+- (NSURL *) coreDataUrl {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject];
+    return [documentsDirectory URLByAppendingPathComponent:CORE_DATA_FILE];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

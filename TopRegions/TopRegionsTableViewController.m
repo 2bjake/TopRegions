@@ -9,6 +9,8 @@
 #import "TopRegionsTableViewController.h"
 #import "FlickrFetcher.h"
 #import "RegionPhotosViewController.h"
+#import "RegionDatabaseAvailability.h"
+#import "Region.h"
 
 @interface TopRegionsTableViewController ()
 @property (strong, nonatomic) IBOutlet UIRefreshControl *spinner;
@@ -16,19 +18,31 @@
 
 @implementation TopRegionsTableViewController
 
+
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.parentViewController.title = @"Top Regions";
 }
 
-#pragma mark - Table view data source
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+-(void)setManagedObjectContext:(NSManagedObjectContext *)managedObjectContext {
+    [super setManagedObjectContext:managedObjectContext];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Region"];
+    request.predicate = nil;
+    //TODO: add sort descriptor for number of photographers
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedStandardCompare:)]];
+    self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                        managedObjectContext:managedObjectContext
+                                                                          sectionNameKeyPath:nil
+                                                                                cacheName:nil];
 }
 
+#pragma mark - Table view data source
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Region Cell" forIndexPath:indexPath];
+    Region *region = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = region.name;
+    cell.detailTextLabel.text = @"yay";
     return cell;
 }
 

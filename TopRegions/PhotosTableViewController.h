@@ -7,11 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RegionDatabaseTableViewController.h"
 
-@interface PhotosTableViewController : UITableViewController
-//@property (nonatomic) NSArray *photoInfos;
+@interface PhotosTableViewController : RegionDatabaseTableViewController
 @property (strong, nonatomic) IBOutlet UIRefreshControl *spinner;
-
-- (void)fetchPhotoData; //abstract
-//+ (NSArray*) photoInfosFromFlickrPhotoArray:(NSArray *)photos;
 @end

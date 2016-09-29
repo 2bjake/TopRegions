@@ -7,7 +7,6 @@
 //
 
 #import "PhotosTableViewController.h"
-//#import "PhotoInfo.h"
 #import "PhotoScrollViewController.h"
 #import "FlickrFetcher.h"
 
@@ -18,29 +17,6 @@ NSString * const UNKNOWN = @"Unknown";
 @end
 
 @implementation PhotosTableViewController
-//@synthesize photoInfos = _photoInfos;
-
-- (IBAction)refreshData:(UIRefreshControl *)sender {
-    [self fetchPhotoData];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    [self fetchPhotoData];
-}
-
-/*
-- (NSArray *)photoInfos {
-    if (!_photoInfos) _photoInfos = [[NSArray alloc] init];
-    return _photoInfos;
-}
-
-- (void)setPhotoInfos:(NSArray *)photoInfos {
-    _photoInfos = photoInfos;
-    [self.tableView reloadData];
-    [self.spinner endRefreshing];
-}
-*/
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     //return self.photoInfos.count;
@@ -63,7 +39,6 @@ NSString * const UNKNOWN = @"Unknown";
     if (indexPath && [segue.identifier isEqualToString:@"showPhoto"] && [segue.destinationViewController isKindOfClass:[PhotoScrollViewController class]]) {
         PhotoScrollViewController *psvc = segue.destinationViewController;
         psvc.title = ((UITableViewCell *)sender).textLabel.text;
-//        PhotoInfo *photoInfo = (PhotoInfo *)self.photoInfos[indexPath.row];
 //        psvc.photoUrl = photoInfo.url;
 //        [PhotosTableViewController addToRecentsPhotoInfo:photoInfo];
     }

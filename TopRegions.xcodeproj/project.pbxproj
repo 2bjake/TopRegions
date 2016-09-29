@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		732FBB9B1D9CA9020091845E /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 732FBB991D9CA9020091845E /* Model.xcdatamodeld */; };
+		732FBBA01D9CA98A0091845E /* Region+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 732FBB9D1D9CA98A0091845E /* Region+CoreDataProperties.m */; };
+		732FBBA11D9CA98A0091845E /* Region.m in Sources */ = {isa = PBXBuildFile; fileRef = 732FBB9F1D9CA98A0091845E /* Region.m */; };
+		732FBBA61D9CBDE60091845E /* RegionDatabaseTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 732FBBA51D9CBDE60091845E /* RegionDatabaseTableViewController.m */; };
 		737A8E441D9C5B0C00CA4DB6 /* CoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737A8E431D9C5B0C00CA4DB6 /* CoreDataTableViewController.m */; };
 		737A8E531D9C9F0600CA4DB6 /* FlickrFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 737A8E481D9C9F0600CA4DB6 /* FlickrFetcher.m */; };
 		737A8E541D9C9F0600CA4DB6 /* PhotoScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737A8E4A1D9C9F0600CA4DB6 /* PhotoScrollViewController.m */; };
@@ -22,6 +26,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		732FBB9A1D9CA9020091845E /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		732FBB9C1D9CA98A0091845E /* Region+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Region+CoreDataProperties.h"; path = "../Region+CoreDataProperties.h"; sourceTree = "<group>"; };
+		732FBB9D1D9CA98A0091845E /* Region+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Region+CoreDataProperties.m"; path = "../Region+CoreDataProperties.m"; sourceTree = "<group>"; };
+		732FBB9E1D9CA98A0091845E /* Region.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Region.h; path = ../Region.h; sourceTree = "<group>"; };
+		732FBB9F1D9CA98A0091845E /* Region.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Region.m; path = ../Region.m; sourceTree = "<group>"; };
+		732FBBA31D9CB7090091845E /* RegionDatabaseAvailability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegionDatabaseAvailability.h; sourceTree = "<group>"; };
+		732FBBA41D9CBDE60091845E /* RegionDatabaseTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegionDatabaseTableViewController.h; sourceTree = "<group>"; };
+		732FBBA51D9CBDE60091845E /* RegionDatabaseTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegionDatabaseTableViewController.m; sourceTree = "<group>"; };
 		737A8E421D9C5B0C00CA4DB6 /* CoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataTableViewController.h; sourceTree = "<group>"; };
 		737A8E431D9C5B0C00CA4DB6 /* CoreDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataTableViewController.m; sourceTree = "<group>"; };
 		737A8E461D9C9F0600CA4DB6 /* FlickrAPIKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrAPIKey.h; sourceTree = "<group>"; };
@@ -58,6 +70,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		732FBBA21D9CA9930091845E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				732FBB991D9CA9020091845E /* Model.xcdatamodeld */,
+				732FBB9C1D9CA98A0091845E /* Region+CoreDataProperties.h */,
+				732FBB9D1D9CA98A0091845E /* Region+CoreDataProperties.m */,
+				732FBB9E1D9CA98A0091845E /* Region.h */,
+				732FBB9F1D9CA98A0091845E /* Region.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		737A8E451D9C5B1400CA4DB6 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -73,6 +97,8 @@
 				737A8E521D9C9F0600CA4DB6 /* TopRegionsTableViewController.m */,
 				737A8E421D9C5B0C00CA4DB6 /* CoreDataTableViewController.h */,
 				737A8E431D9C5B0C00CA4DB6 /* CoreDataTableViewController.m */,
+				732FBBA41D9CBDE60091845E /* RegionDatabaseTableViewController.h */,
+				732FBBA51D9CBDE60091845E /* RegionDatabaseTableViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -106,6 +132,8 @@
 		7392B3DC1D9C5A68007C55D2 /* TopRegions */ = {
 			isa = PBXGroup;
 			children = (
+				732FBBA31D9CB7090091845E /* RegionDatabaseAvailability.h */,
+				732FBBA21D9CA9930091845E /* Model */,
 				737A8E591D9C9F1200CA4DB6 /* Flickr */,
 				737A8E451D9C5B1400CA4DB6 /* Controllers */,
 				7392B3E01D9C5A68007C55D2 /* AppDelegate.h */,
@@ -199,11 +227,15 @@
 			files = (
 				7392B3E21D9C5A68007C55D2 /* AppDelegate.m in Sources */,
 				737A8E441D9C5B0C00CA4DB6 /* CoreDataTableViewController.m in Sources */,
+				732FBBA01D9CA98A0091845E /* Region+CoreDataProperties.m in Sources */,
+				732FBBA11D9CA98A0091845E /* Region.m in Sources */,
 				737A8E551D9C9F0600CA4DB6 /* PhotosTableViewController.m in Sources */,
 				737A8E5C1D9CA2FA00CA4DB6 /* RegionPhotosViewController.m in Sources */,
 				737A8E531D9C9F0600CA4DB6 /* FlickrFetcher.m in Sources */,
 				737A8E571D9C9F0600CA4DB6 /* RecentPhotosViewController.m in Sources */,
 				737A8E541D9C9F0600CA4DB6 /* PhotoScrollViewController.m in Sources */,
+				732FBBA61D9CBDE60091845E /* RegionDatabaseTableViewController.m in Sources */,
+				732FBB9B1D9CA9020091845E /* Model.xcdatamodeld in Sources */,
 				737A8E581D9C9F0600CA4DB6 /* TopRegionsTableViewController.m in Sources */,
 				7392B3DF1D9C5A68007C55D2 /* main.m in Sources */,
 			);
@@ -359,6 +391,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		732FBB991D9CA9020091845E /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				732FBB9A1D9CA9020091845E /* Model.xcdatamodel */,
+			);
+			currentVersion = 732FBB9A1D9CA9020091845E /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 7392B3D21D9C5A68007C55D2 /* Project object */;
 }

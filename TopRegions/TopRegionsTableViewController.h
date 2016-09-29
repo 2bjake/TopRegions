@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RegionDatabaseTableViewController.h"
 
-@interface TopRegionsTableViewController : UITableViewController
+@interface TopRegionsTableViewController : RegionDatabaseTableViewController
 
 @end
