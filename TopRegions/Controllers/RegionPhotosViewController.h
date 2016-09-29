@@ -7,8 +7,8 @@
 //
 
 #import "PhotosTableViewController.h"
-//#import "Place.h"
+#import "Region.h"
 
 @interface RegionPhotosViewController : PhotosTableViewController
-//@property (nonatomic) Place *place;
+@property (nonatomic) Region *region;
 @end

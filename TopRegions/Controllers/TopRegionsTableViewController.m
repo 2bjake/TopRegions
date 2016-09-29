@@ -18,8 +18,6 @@
 
 @implementation TopRegionsTableViewController
 
-
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.parentViewController.title = @"Top Regions";
@@ -29,8 +27,10 @@
     [super setManagedObjectContext:managedObjectContext];
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Region"];
     request.predicate = nil;
-    //TODO: add sort descriptor for number of photographers
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedStandardCompare:)]];
+    request.fetchLimit = 50;
+    
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"photographerCount" ascending:NO],
+                                [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedStandardCompare:)]];
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:managedObjectContext
                                                                           sectionNameKeyPath:nil
@@ -42,7 +42,12 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Region Cell" forIndexPath:indexPath];
     Region *region = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = region.name;
-    cell.detailTextLabel.text = @"yay";
+    
+    NSMutableString *subtitleFormat = [[NSMutableString alloc] initWithString:@"%lu photographer"];
+    if ([region.photographers count] != 1) {
+        [subtitleFormat appendString:@"s"];
+    }
+    cell.detailTextLabel.text = [NSString stringWithFormat:subtitleFormat, [region.photographers count]];
     return cell;
 }
 
@@ -51,8 +56,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     if (indexPath && [segue.identifier isEqualToString:@"showRegionPhotos"] && [segue.destinationViewController isKindOfClass:[RegionPhotosViewController class]]) {
-        //RegionPhotosViewController *rpvc = (RegionPhotosViewController *)segue.destinationViewController;
-        //TODO: set region
+        RegionPhotosViewController *rpvc = (RegionPhotosViewController *)segue.destinationViewController;
+        rpvc.region = [self.fetchedResultsController objectAtIndexPath:indexPath];
     }
 }
 

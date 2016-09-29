@@ -1,5 +1,5 @@
 //
-//  Region+CoreDataProperties.m
+//  Photographer+CoreDataProperties.m
 //  TopRegions
 //
 //  Created by Foster, Jake on 9/29/16.
@@ -9,13 +9,12 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "Region+CoreDataProperties.h"
+#import "Photographer+CoreDataProperties.h"
 
-@implementation Region (CoreDataProperties)
+@implementation Photographer (CoreDataProperties)
 
 @dynamic name;
-@dynamic photographerCount;
-@dynamic photos;
-@dynamic photographers;
+@dynamic photo;
+@dynamic region;
 
 @end

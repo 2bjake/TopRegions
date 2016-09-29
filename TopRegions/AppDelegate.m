@@ -7,8 +7,11 @@
 //
 
 #import "AppDelegate.h"
-#import "Region.h" //temp
+#import "Region.h"
 #import "RegionDatabaseAvailability.h"
+#import "FlickrFetcher.h"
+#import "Photo.h"
+#import "Photographer.h"
 
 #define CORE_DATA_FILE @"TopRegionsModel"
 #define REGION @"Region"
@@ -25,6 +28,14 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self openCoreDataDocument];
     return YES;
+}
+
+- (void)setRegionDatabaseContext:(NSManagedObjectContext *)regionDatabaseContext {
+    _regionDatabaseContext = regionDatabaseContext;
+    NSDictionary *userInfo = self.regionDatabaseContext ? @{ RegionDatabaseAvailabilityContext : self.regionDatabaseContext} : nil;
+    [[NSNotificationCenter defaultCenter] postNotificationName:RegionDatabaseAvailabilityNotification
+                                                        object:self
+                                                      userInfo:userInfo];
 }
 
 - (void)openCoreDataDocument {
@@ -55,34 +66,66 @@
 - (void)regionDatabaseDocumentReady {
     if (self.regionDatabaseDocument.documentState == UIDocumentStateNormal) {
         self.regionDatabaseContext = self.regionDatabaseDocument.managedObjectContext;
-        [self populateRegionDatabase];
+        [self fetchPhotos];
     } else {
         NSLog(@"document at %@ is not ready", self.regionDatabaseDocument.fileURL);
     }
 }
 
-- (void)setRegionDatabaseContext:(NSManagedObjectContext *)regionDatabaseContext {
-    _regionDatabaseContext = regionDatabaseContext;
-    NSDictionary *userInfo = self.regionDatabaseContext ? @{ RegionDatabaseAvailabilityContext : self.regionDatabaseContext} : nil;
-    [[NSNotificationCenter defaultCenter] postNotificationName:RegionDatabaseAvailabilityNotification
-                                                        object:self
-                                                      userInfo:userInfo];
+- (void)fetchPhotos {
+    NSURL *url = [FlickrFetcher URLforRecentGeoreferencedPhotos];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSessionDownloadTask *task =
+    [session downloadTaskWithRequest:request
+                   completionHandler:^(NSURL * _Nullable localFile, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                       if (!error) {
+                           NSData *data = [NSData dataWithContentsOfURL:localFile];
+                           NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error: NULL];
+                           NSArray *photoDicts = [dict valueForKeyPath:FLICKR_RESULTS_PHOTOS];
+                           
+                           dispatch_async(dispatch_get_main_queue(), ^{
+                               for (NSDictionary *photoDict in photoDicts) {
+                                   Photo *photo = [Photo getOrCreatePhotoWithFlickrPhotoDictionary:photoDict context:self.regionDatabaseContext];
+                                   if (!photo.region) {
+                                       [self fetchRegionForPhoto:photo];
+                                   } else {
+                                       [self addPhotographerName:photo.owner toRegion:photo.region];
+                                   }
+                               }
+                           });
+                       }
+                   }];
+    [task resume];
 }
 
-- (void)populateRegionDatabase { //this is temp
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:REGION];
-    request.fetchBatchSize = 20;
-    request.predicate = nil;
-    NSArray *regions = [self.regionDatabaseContext executeFetchRequest:request error:NULL];
-    if ([regions count] == 0) {
-        Region *region = [NSEntityDescription insertNewObjectForEntityForName:REGION inManagedObjectContext:self.regionDatabaseContext];
-        region.unique = @"1";
-        region.name = @"Hello";
-        
-        region = [NSEntityDescription insertNewObjectForEntityForName:REGION inManagedObjectContext:self.regionDatabaseContext];
-        region.unique = @"2";
-        region.name = @"World";
-    }
+- (void)fetchRegionForPhoto:(Photo *)photo {
+    NSURL *url = [FlickrFetcher URLforInformationAboutPlace:photo.placeId];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSessionDownloadTask *task =
+    [session downloadTaskWithRequest:request
+                   completionHandler:^(NSURL * _Nullable localFile, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                       if (!error) {
+                           NSData *data = [NSData dataWithContentsOfURL:localFile];
+                           NSDictionary *placeDict = [NSJSONSerialization JSONObjectWithData:data options:0 error: NULL];
+                           NSString *regionName = [FlickrFetcher extractRegionNameFromPlaceInformation:placeDict];
+                           dispatch_async(dispatch_get_main_queue(), ^{
+                               Region *region = [Region getOrCreateRegionWithName:regionName context:self.regionDatabaseContext];
+                               photo.region = region;
+                               [self addPhotographerName:photo.owner toRegion:region];
+                           });
+                       }
+                   }];
+    [task resume];
+}
+
+- (void)addPhotographerName:(NSString *)name toRegion:(Region *)region {
+    Photographer *photographer = [Photographer getOrCreatePhotographerWithName:name context:self.regionDatabaseContext];
+    [region addPhotographersObject:photographer];
+    region.photographerCount = @([region.photographers count]);
 }
 
 - (NSURL *) coreDataUrl {

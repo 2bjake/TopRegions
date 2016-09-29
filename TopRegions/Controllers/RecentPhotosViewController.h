@@ -9,5 +9,5 @@
 #import "PhotosTableViewController.h"
 
 @interface RecentPhotosViewController : PhotosTableViewController
-
+@property (nonatomic) NSManagedObjectContext *managedObjectContext;
 @end

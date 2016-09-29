@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RegionDatabaseTableViewController.h"
+#import "CoreDataTableViewController.h"
 
-@interface PhotosTableViewController : RegionDatabaseTableViewController
-@property (strong, nonatomic) IBOutlet UIRefreshControl *spinner;
+@interface PhotosTableViewController : CoreDataTableViewController
 @end
